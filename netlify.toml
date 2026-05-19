@@ -1,0 +1,4 @@
+# Static site lives in /version-b (no build step).
+[build]
+  command = ""
+  publish = "version-b"
