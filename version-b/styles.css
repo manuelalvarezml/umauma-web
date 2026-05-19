@@ -684,11 +684,15 @@ a {
     --places-shift: 0;
     /* Match prior visual inset: section padding + piece offset (one symmetric edge) */
     --places-edge: calc(max(8vw, 1rem) * 2);
+    /* Title ↔ description (country + copy): flex gap only */
+    --places-inner-gap: calc(clamp(0.75rem, 2.15vh, 1.15rem) + 0.55rem);
+    /* Label→first country and copy→next country (same step); not added between title and copy */
+    --places-between-blocks: clamp(0.5rem, 1.5vh, 0.95rem);
     min-height: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: clamp(0.75rem, 2.15vh, 1.15rem);
+    gap: var(--places-inner-gap);
     padding-top: clamp(1.25rem, 3.5vh, 2rem);
     padding-right: var(--places-edge);
     padding-bottom: clamp(2.5rem, 6vh, 3.5rem);
@@ -723,9 +727,61 @@ a {
     text-align: left;
   }
 
+  /* Odd country titles left, even right — full width inside --places-edge; alignment only */
+  .places-stage .country:nth-child(4n + 3) {
+    align-self: stretch;
+    text-align: left;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .places-stage .country:nth-child(4n + 5) {
+    align-self: stretch;
+    text-align: right;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .places-stage .country-copy:nth-child(4n + 4) {
+    align-self: stretch;
+    text-align: left;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .places-stage .country-copy:nth-child(4n + 6) {
+    align-self: stretch;
+    text-align: right;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .places-stage .country {
+    margin-top: var(--places-between-blocks);
+  }
+
   .editorial-stage-services {
     --services-inline: max(1.45rem, 8vw);
     min-height: 122vh;
+  }
+
+  /* Services: pin titles + copy to the same horizontal stripe (avoids shrink-to-fit bleeding past gutters) */
+  body.b-services .editorial-stage-services .title-work {
+    left: var(--services-inline, max(1.45rem, 8vw));
+    right: var(--services-inline, max(1.45rem, 8vw));
+    width: auto;
+    box-sizing: border-box;
+  }
+
+  body.b-services .editorial-stage-services .work-item {
+    left: var(--services-inline, max(1.45rem, 8vw));
+    right: var(--services-inline, max(1.45rem, 8vw));
+    width: auto;
+    box-sizing: border-box;
   }
 
   .geometry-studio,
@@ -855,6 +911,23 @@ a {
     top: 92vh;
   }
 
+  /* Odd work titles left, even right (matches main child order) */
+  .editorial-stage-services .work-item:nth-child(4n + 5) {
+    text-align: left;
+  }
+
+  .editorial-stage-services .work-item:nth-child(4n + 7) {
+    text-align: right;
+  }
+
+  .editorial-stage-services .work-copy:nth-child(4n + 6) {
+    text-align: left;
+  }
+
+  .editorial-stage-services .work-copy:nth-child(4n + 8) {
+    text-align: right;
+  }
+
   .title-contact {
     top: 18vh;
     font-size: clamp(2.2rem, 7.5vw, 5.25rem);
@@ -917,7 +990,9 @@ a {
   .places-stage {
     /* Was: padding H max(8vw,1rem) + piece left max(6vw,0.85rem) */
     --places-edge: calc(max(8vw, 1rem) + max(6vw, 0.85rem));
-    gap: clamp(0.65rem, 2vh, 1.05rem);
+    --places-inner-gap: calc(clamp(0.65rem, 2vh, 1.05rem) + 0.55rem);
+    --places-between-blocks: clamp(0.48rem, 1.45vh, 0.9rem);
+    gap: var(--places-inner-gap);
     padding-top: clamp(1rem, 3vh, 1.65rem);
     padding-right: var(--places-edge);
     padding-bottom: clamp(2rem, 5.5vh, 3rem);
@@ -1074,5 +1149,31 @@ a {
 
   .cli2 {
     left: 42vw;
+  }
+}
+
+/* --- Scroll reveal (opacity + motion only; no blur for perf) --- */
+@media (prefers-reduced-motion: no-preference) {
+  html.js-reveal .reveal-on-scroll {
+    transition:
+      opacity 0.65s cubic-bezier(0.18, 1, 0.28, 1),
+      transform 0.65s cubic-bezier(0.18, 1, 0.28, 1);
+  }
+
+  html.js-reveal .reveal-on-scroll:not(.reveal-visible) {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+
+  html.js-reveal .reveal-on-scroll.reveal-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
