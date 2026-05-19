@@ -174,9 +174,11 @@ a {
   z-index: 1;
 }
 
-/* Above later .editorial-stage sections (e.g. places) so embed iframes receive clicks. */
-.home-shell > .editorial-stage.player-stage {
-  z-index: 6;
+/* Desktop only: floated listen strip overlaps hero tail; needs stacking over places. */
+@media (min-width: 921px) {
+  .home-shell > .editorial-stage.player-stage {
+    z-index: 6;
+  }
 }
 
 .bg-studio,
@@ -657,20 +659,72 @@ a {
     gap: 0.45rem;
   }
 
+  /* Listen / embeds: reserved band, content vertically centered */
   .player-stage {
-    top: 96vh;
-    min-height: 50vh;
-    height: 50vh;
-    gap: 2.8vh;
-    padding-top: 13vh;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    height: auto;
+    min-height: clamp(20rem, 46vh, 24rem);
+    --home-embeds-pad-bottom: clamp(1.1rem, 3.5vw, 2rem);
+    padding-top: clamp(1.35rem, 4.5vw, 2.35rem);
+    padding-bottom: var(--home-embeds-pad-bottom);
+    gap: clamp(0.85rem, 2.2vh, 1.35rem);
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .home-shell > .editorial-stage.player-stage {
+    z-index: 1;
   }
 
   .places-stage {
-    --places-shift: 31vh;
-    min-height: 140vh;
+    --places-shift: 0;
+    /* Match prior visual inset: section padding + piece offset (one symmetric edge) */
+    --places-edge: calc(max(8vw, 1rem) * 2);
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.75rem, 2.15vh, 1.15rem);
+    padding-top: clamp(1.25rem, 3.5vh, 2rem);
+    padding-right: var(--places-edge);
+    padding-bottom: clamp(2.5rem, 6vh, 3.5rem);
+    padding-left: var(--places-edge);
+    box-sizing: border-box;
+  }
+
+  .places-stage .geometry-places {
+    position: absolute;
+    top: clamp(3rem, 10vh, 6rem);
+    left: 0;
+    width: min(70vw, 18rem);
+    right: auto;
+    opacity: 0.28;
+    pointer-events: none;
+    z-index: 0;
+    transform: none;
+  }
+
+  .places-stage .piece {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    max-width: min(22rem, 100%);
+    box-sizing: border-box;
+    transform: none;
+    z-index: 2;
+    margin: 0;
+    text-align: left;
   }
 
   .editorial-stage-services {
+    --services-inline: max(1.45rem, 8vw);
     min-height: 122vh;
   }
 
@@ -712,8 +766,12 @@ a {
 
   .editorial-stage-services .work-copy {
     font-size: clamp(1.08rem, 2.85vw, 1.42rem);
-    max-width: min(22rem, calc(100vw - 1.5rem));
     line-height: 1.28;
+    left: var(--services-inline, max(1.45rem, 8vw));
+    right: var(--services-inline, max(1.45rem, 8vw));
+    width: auto;
+    max-width: none;
+    box-sizing: border-box;
   }
 
   .contact-stage .contact-line {
@@ -758,54 +816,6 @@ a {
 
   .low-right {
     bottom: 1vh;
-  }
-
-  .places-label {
-    top: 13vh;
-    left: 8vw;
-    right: auto;
-  }
-
-  .c1 {
-    top: 24vh;
-  }
-
-  .cc1 {
-    top: 30vh;
-  }
-
-  .c2 {
-    top: 41vh;
-  }
-
-  .cc2 {
-    top: 47vh;
-  }
-
-  .c3 {
-    top: 58vh;
-  }
-
-  .cc3 {
-    top: 64vh;
-  }
-
-  .c4 {
-    top: 75vh;
-  }
-
-  .cc4 {
-    top: 81vh;
-  }
-
-  .c5 {
-    top: 72vh;
-    bottom: auto;
-  }
-
-  .cc5 {
-    top: 78vh;
-    bottom: auto;
   }
 
   .w1 {
@@ -886,20 +896,36 @@ a {
 
 @media (max-width: 560px) {
   .player-stage {
-    top: 98vh;
-    min-height: 48vh;
-    height: 48vh;
-    gap: 2.4vh;
-    padding-top: 12.4vh;
+    min-height: clamp(20rem, 48vh, 24.5rem);
+    --home-embeds-pad-bottom: clamp(1rem, 3.2vw, 1.85rem);
+    padding-top: clamp(1.2rem, 4.2vw, 2.05rem);
+    padding-bottom: var(--home-embeds-pad-bottom);
+    gap: clamp(0.65rem, 1.8vh, 1.05rem);
+    justify-content: center;
   }
 
   .places-stage {
-    --places-shift: 29vh;
-    /* Was 164vh — left a large empty band above the footer on phones */
-    min-height: 124vh;
+    /* Was: padding H max(8vw,1rem) + piece left max(6vw,0.85rem) */
+    --places-edge: calc(max(8vw, 1rem) + max(6vw, 0.85rem));
+    gap: clamp(0.65rem, 2vh, 1.05rem);
+    padding-top: clamp(1rem, 3vh, 1.65rem);
+    padding-right: var(--places-edge);
+    padding-bottom: clamp(2rem, 5.5vh, 3rem);
+    padding-left: var(--places-edge);
+  }
+
+  .places-stage .geometry-places {
+    top: clamp(2rem, 8vh, 4.5rem);
+    left: 0;
+    opacity: 0.24;
+  }
+
+  .places-stage .piece {
+    max-width: min(22rem, 100%);
   }
 
   .editorial-stage-services {
+    --services-inline: max(1.65rem, 9.5vw);
     min-height: 128vh;
   }
 
@@ -972,15 +998,29 @@ a {
 
   .editorial-stage-services .work-copy {
     font-size: clamp(1.14rem, 3.95vw, 1.48rem);
-    max-width: min(22rem, calc(100vw - 1.5rem));
     line-height: 1.3;
+    left: var(--services-inline, max(1.65rem, 9.5vw));
+    right: var(--services-inline, max(1.65rem, 9.5vw));
+    width: auto;
+    max-width: none;
+    box-sizing: border-box;
   }
 
+  /* ~1.5× contact body copy on phone */
   .contact-stage .contact-line {
-    font-size: clamp(1.08rem, 3.75vw, 1.52rem);
+    font-size: clamp(1.62rem, 5.65vw, 2.28rem);
     max-width: min(22rem, calc(100vw - 1.5rem));
     line-height: 1.3;
     overflow-wrap: anywhere;
+  }
+
+  body.b-contact .contact-link-inline {
+    font-size: clamp(1.05rem, 3.5vw, 1.45rem);
+    letter-spacing: 0.12em;
+  }
+
+  body.b-contact .top-left {
+    font-size: clamp(1.05rem, 3.6vw, 1.32rem);
   }
 
   .site-nav {
@@ -1006,8 +1046,8 @@ a {
   }
 
   .home-footer {
-    min-height: 10vh;
-    padding: 0 0 3vh max(1rem, 8vw);
+    min-height: 5vh;
+    padding: 0 0 2vh max(1rem, 8vw);
   }
 
   .live-photo {
