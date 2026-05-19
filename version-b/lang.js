@@ -116,4 +116,15 @@ document.addEventListener("DOMContentLoaded", () => {
       setLanguage(button.dataset.lang || "en");
     });
   });
+
+  const nav = document.querySelector(".site-nav");
+  if (nav) {
+    const scrollThreshold = 12;
+    const updateNavScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      nav.classList.toggle("is-scrolled", y > scrollThreshold);
+    };
+    updateNavScroll();
+    window.addEventListener("scroll", updateNavScroll, { passive: true });
+  }
 });

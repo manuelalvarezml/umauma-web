@@ -42,6 +42,58 @@ a {
   font-size: 1.5rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  background: transparent;
+  isolation: isolate;
+}
+
+/* Frosted strip + blur; feathered at bottom so no hard edge vs page content */
+.site-nav::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(100% + 3rem);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.24s ease;
+  background: linear-gradient(
+    180deg,
+    rgba(12, 9, 7, 0.55) 0%,
+    rgba(12, 9, 7, 0.28) 42%,
+    rgba(12, 9, 7, 0.08) 72%,
+    rgba(12, 9, 7, 0) 100%
+  );
+  backdrop-filter: blur(16px) saturate(1.08);
+  -webkit-backdrop-filter: blur(16px) saturate(1.08);
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 18%,
+    rgba(0, 0, 0, 0.94) 44%,
+    rgba(0, 0, 0, 0.5) 68%,
+    rgba(0, 0, 0, 0.16) 86%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 18%,
+    rgba(0, 0, 0, 0.94) 44%,
+    rgba(0, 0, 0, 0.5) 68%,
+    rgba(0, 0, 0, 0.16) 86%,
+    transparent 100%
+  );
+}
+
+.site-nav.is-scrolled::before {
+  opacity: 1;
+}
+
+.site-nav > * {
+  position: relative;
+  z-index: 1;
 }
 
 .nav-left {
@@ -120,6 +172,11 @@ a {
 
 .home-shell > .editorial-stage {
   z-index: 1;
+}
+
+/* Above later .editorial-stage sections (e.g. places) so embed iframes receive clicks. */
+.home-shell > .editorial-stage.player-stage {
+  z-index: 6;
 }
 
 .bg-studio,
@@ -302,7 +359,6 @@ a {
   height: 52vh;
   background: transparent;
   overflow: visible;
-  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -456,12 +512,12 @@ a {
 }
 
 .c5 {
-  bottom: 34vh;
+  bottom: 44vh;
   left: 44vw;
 }
 
 .cc5 {
-  bottom: 27vh;
+  bottom: 36vh;
   left: 44vw;
 }
 
@@ -611,7 +667,7 @@ a {
 
   .places-stage {
     --places-shift: 31vh;
-    min-height: 156vh;
+    min-height: 140vh;
   }
 
   .editorial-stage-services {
@@ -635,7 +691,10 @@ a {
   .center-line {
     top: 60vh;
     right: 8vw;
-    max-width: none;
+    left: 8vw;
+    max-width: min(22rem, calc(100vw - 1.5rem));
+    font-size: clamp(1.28rem, 3.6vw, 1.9rem);
+    line-height: 1.28;
   }
 
   .sound-shell {
@@ -649,6 +708,19 @@ a {
   .country-copy,
   .work-copy {
     max-width: 20rem;
+  }
+
+  .editorial-stage-services .work-copy {
+    font-size: clamp(1.08rem, 2.85vw, 1.42rem);
+    max-width: min(22rem, calc(100vw - 1.5rem));
+    line-height: 1.28;
+  }
+
+  .contact-stage .contact-line {
+    font-size: clamp(1.02rem, 2.95vw, 1.4rem);
+    max-width: min(22rem, calc(100vw - 1.5rem));
+    line-height: 1.28;
+    overflow-wrap: anywhere;
   }
 
   .low-right,
@@ -727,12 +799,12 @@ a {
   }
 
   .c5 {
-    top: 80vh;
+    top: 72vh;
     bottom: auto;
   }
 
   .cc5 {
-    top: 86vh;
+    top: 78vh;
     bottom: auto;
   }
 
@@ -770,6 +842,17 @@ a {
 
   .title-contact {
     top: 18vh;
+    font-size: clamp(2.2rem, 7.5vw, 5.25rem);
+    letter-spacing: 0.045em;
+    left: max(0.75rem, 3vw);
+    right: max(0.75rem, 3vw);
+    max-width: calc(100vw - 1.5rem);
+    line-height: 1.06;
+    box-sizing: border-box;
+  }
+
+  body.b-contact .contact-stage {
+    overflow: visible;
   }
 
   .cl1 {
@@ -812,7 +895,8 @@ a {
 
   .places-stage {
     --places-shift: 29vh;
-    min-height: 164vh;
+    /* Was 164vh — left a large empty band above the footer on phones */
+    min-height: 124vh;
   }
 
   .editorial-stage-services {
@@ -833,15 +917,26 @@ a {
   }
 
   .title-stretch,
-  .title-work,
-  .title-contact {
+  .title-work {
     font-size: clamp(4.4rem, 26vw, 8rem);
+  }
+
+  /* Shorter word + Spanish "CONTACTO"; keep inside viewport vs WORK title */
+  .title-contact {
+    font-size: clamp(2rem, 9.2vw, 4.25rem);
+    letter-spacing: 0.04em;
+    left: max(0.75rem, 3vw);
+    right: max(0.75rem, 3vw);
+    max-width: calc(100vw - 1.5rem);
+    line-height: 1.06;
+    box-sizing: border-box;
   }
 
   .center-line {
     top: 60vh;
-    font-size: 1.2rem;
-    max-width: 15rem;
+    font-size: clamp(1.38rem, 4.8vw, 2.05rem);
+    max-width: min(22rem, calc(100vw - 1.5rem));
+    line-height: 1.28;
   }
 
   .low-left {
@@ -875,9 +970,31 @@ a {
     max-width: 14rem;
   }
 
+  .editorial-stage-services .work-copy {
+    font-size: clamp(1.14rem, 3.95vw, 1.48rem);
+    max-width: min(22rem, calc(100vw - 1.5rem));
+    line-height: 1.3;
+  }
+
+  .contact-stage .contact-line {
+    font-size: clamp(1.08rem, 3.75vw, 1.52rem);
+    max-width: min(22rem, calc(100vw - 1.5rem));
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
   .site-nav {
-    font-size: 0.82rem;
+    font-size: clamp(1rem, 4.2vw, 1.2rem);
     gap: 0.45rem;
+  }
+
+  .places-stage .country {
+    font-size: clamp(1.65rem, 6.2vw, 2.5rem);
+  }
+
+  .places-stage .country-copy {
+    font-size: clamp(1.18rem, 4.1vw, 1.55rem);
+    max-width: min(22rem, calc(100vw - 2rem));
   }
 
   .lang-btn {
@@ -886,6 +1003,11 @@ a {
 
   .home-mark {
     font-size: 0.68rem;
+  }
+
+  .home-footer {
+    min-height: 10vh;
+    padding: 0 0 3vh max(1rem, 8vw);
   }
 
   .live-photo {
